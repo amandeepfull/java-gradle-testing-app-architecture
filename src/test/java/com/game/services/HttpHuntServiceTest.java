@@ -1,6 +1,7 @@
 package com.game.services;
 
 import com.httphunt.model.Tool;
+import com.httphunt.test.Tester;
 import com.httphunt.utlity.ObjUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +20,7 @@ public class HttpHuntServiceTest {
         input.put("encryptedMessage", "DRO AESMU LBYGX PYH TEWZ YFOB DRO VKJI NYQ, SC'XD QBOKD");
         input.put("key", 10);
 
-        checkGetDecryptedMsg(input, "THE QUICK BROWN FOX JUMP OVER THE LAZY DOG, IS'NT GREAT");
+        Tester.test(() -> httpService.getDecryptedMsg(input), "THE QUICK BROWN FOX JUMP OVER THE LAZY DOG, IS'NT GREAT");
 
     }
 
@@ -30,8 +31,7 @@ public class HttpHuntServiceTest {
         input.put("encryptedMessage", "P SPRL KVPUN JVKPUN HUK ZV P HT KVPUN, KPK FVB PTWYLZZLK!!");
         input.put("key", 7);
 
-
-        checkGetDecryptedMsg(input, "I LIKE DOING CODING AND SO I AM DOING, DID YOU IMPRESSED!!");
+        Tester.test(() -> httpService.getDecryptedMsg(input), "I LIKE DOING CODING AND SO I AM DOING, DID YOU IMPRESSED!!");
 
     }
 
@@ -42,8 +42,7 @@ public class HttpHuntServiceTest {
         input.put("encryptedMessage", "KWWS KXQW LV D QLFH JDPH, L HQMRBHG VROYLQJ LW, UHDOOB...");
         input.put("key", 3);
 
-
-        checkGetDecryptedMsg(input, "HTTP HUNT IS A NICE GAME, I ENJOYED SOLVING IT, REALLY...");
+        Tester.test(() -> httpService.getDecryptedMsg(input), "HTTP HUNT IS A NICE GAME, I ENJOYED SOLVING IT, REALLY...");
 
     }
 
@@ -67,7 +66,8 @@ public class HttpHuntServiceTest {
         expectedOutput.add("flare");
         expectedOutput.add("firstaid");
 
-        checkGetHiddenTools(input, expectedOutput);
+        Tester.test(() -> httpService.getHiddenTools(input), expectedOutput);
+
     }
 
     @Test
@@ -93,17 +93,18 @@ public class HttpHuntServiceTest {
         expectedOutput.add("gun");
         expectedOutput.add("rope");
 
-        checkGetHiddenTools(input, expectedOutput);
+        Tester.test(() -> httpService.getHiddenTools(input), expectedOutput);
+
     }
 
 
     @Test
     public void testGetTimeUsage_0(){
 
-        checkGetTimeUsage("2017-01-30 10:10:00","2017-01-30 10:40:00",30);
-        checkGetTimeUsage("2017-01-30 11:10:00","2017-01-30 13:30:00",140);
-        checkGetTimeUsage("2017-01-30 12:10:00","2017-01-30 12:50:00",40);
-        checkGetTimeUsage("2017-01-30 10:10:00","2017-01-30 10:15:00",5);
+        Tester.test(() -> httpService.getTimeUsage("2017-01-30 10:10:00","2017-01-30 10:40:00"), 30);
+        Tester.test(() -> httpService.getTimeUsage("2017-01-30 11:10:00","2017-01-30 13:30:00"), 140);
+        Tester.test(() -> httpService.getTimeUsage("2017-01-30 12:10:00","2017-01-30 12:50:00"), 40);
+        Tester.test(() -> httpService.getTimeUsage("2017-01-30 10:10:00","2017-01-30 10:15:00"), 5);
 
     }
 
@@ -164,7 +165,8 @@ public class HttpHuntServiceTest {
         expectedOutput.add(new Tool("flare", 35));
         expectedOutput.add(new Tool("firstaid", 15));
 
-        checkGetToolsSortedOnUsage(input, expectedOutput);
+        Tester.test(() -> httpService.getToolsSortedOnUsage(input), expectedOutput);
+
     }
 
     @Test
@@ -204,7 +206,7 @@ public class HttpHuntServiceTest {
         List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("water");
 
-        checkGetToolsToTakeSorted(input, expectedOutput);
+        Tester.test(() -> httpService.getToolsToTakeSorted(input), expectedOutput);
     }
 
     @Test
@@ -244,34 +246,7 @@ public class HttpHuntServiceTest {
         List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("flare");
 
-        checkGetToolsToTakeSorted(input, expectedOutput);
+        Tester.test(() -> httpService.getToolsToTakeSorted(input), expectedOutput);
 
     }
-
-    private void checkGetDecryptedMsg(Map<String, Object> input, String expectedOutput) {
-        String actualOutput = httpService.getDecryptedMsg(input);
-        Assert.assertEquals(expectedOutput, actualOutput);
-    }
-
-    private void checkGetHiddenTools(Map<String, Object> input, List<String> expectedOutput) {
-        List<String> actualOutput = httpService.getHiddenTools(input);
-        Assert.assertEquals(expectedOutput, actualOutput);
-    }
-
-    private void checkGetTimeUsage(String startTime, String endTime, int expectedOutput) {
-        int actualOutput = httpService.getTimeUsage(startTime,endTime);
-        Assert.assertEquals(expectedOutput, actualOutput);
-    }
-
-    private void checkGetToolsSortedOnUsage(Map<String, Object> input, List<Tool> expectedOutput) {
-        List<Tool> actualOutput = httpService.getToolsSortedOnUsage(input);
-        Assert.assertEquals(ObjUtil.getJson(expectedOutput), ObjUtil.getJson(actualOutput));
-    }
-
-    private void checkGetToolsToTakeSorted(Map<String, Object> input, List<String> expectedOutput) {
-        List<String> actualOutput = httpService.getToolsToTakeSorted(input);
-        Assert.assertEquals(ObjUtil.getJson(expectedOutput), ObjUtil.getJson(actualOutput));
-    }
-
-
 }

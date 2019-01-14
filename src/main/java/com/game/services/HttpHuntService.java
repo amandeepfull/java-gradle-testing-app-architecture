@@ -84,7 +84,7 @@ public class HttpHuntService {
             toolsSortedOnUsage.add(new Tool(key, tempUsageData.get(key)));
         }
 
-        toolsSortedOnUsage.sort((Tool o1, Tool o2) -> (int) (o2.getTimeUsedInMinutes() - o1.getTimeUsedInMinutes()));
+        toolsSortedOnUsage.sort((Tool o1, Tool o2) ->  (o2.getTimeUsedInMinutes() - o1.getTimeUsedInMinutes()));
 
         return toolsSortedOnUsage;
     }
@@ -145,7 +145,6 @@ public class HttpHuntService {
                 iterator.remove();
         }
 
-        System.out.println(ObjUtil.getJson(tools));
         return tools;
 
     }
