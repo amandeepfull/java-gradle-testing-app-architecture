@@ -1,0 +1,13 @@
+ext {
+    libsVersion = [
+            jackson          : '2.9.3'
+    ]
+
+    libs = [
+            jackson             : ["com.fasterxml.jackson.core:jackson-annotations:$libsVersion.jackson",
+                                   "com.fasterxml.jackson.core:jackson-databind:$libsVersion.jackson"
+            ]
+    ]
+
+
+}
