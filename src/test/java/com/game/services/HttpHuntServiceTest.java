@@ -2,7 +2,6 @@ package com.game.services;
 
 import com.httphunt.model.Tool;
 import com.httphunt.test.Tester;
-import com.httphunt.utlity.ObjUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +19,8 @@ public class HttpHuntServiceTest {
         input.put("encryptedMessage", "DRO AESMU LBYGX PYH TEWZ YFOB DRO VKJI NYQ, SC'XD QBOKD");
         input.put("key", 10);
 
-        Tester.test(() -> httpService.getDecryptedMsg(input), "THE QUICK BROWN FOX JUMP OVER THE LAZY DOG, IS'NT GREAT");
+        Tester.testSize(() -> httpService.getDecryptedMsg(input),55);
+        Tester.testString(() ->httpService.getDecryptedMsg(input), "THE QUICK BROWN FOX JUMP OVER THE LAZY DOG, IS'NT GREAT");
 
     }
 
@@ -31,7 +31,8 @@ public class HttpHuntServiceTest {
         input.put("encryptedMessage", "P SPRL KVPUN JVKPUN HUK ZV P HT KVPUN, KPK FVB PTWYLZZLK!!");
         input.put("key", 7);
 
-        Tester.test(() -> httpService.getDecryptedMsg(input), "I LIKE DOING CODING AND SO I AM DOING, DID YOU IMPRESSED!!");
+        Tester.testSize(() -> httpService.getDecryptedMsg(input), 58);
+        Tester.testString(() -> httpService.getDecryptedMsg(input), "I LIKE DOING CODING AND SO I AM DOING, DID YOU IMPRESSED!!");
 
     }
 
@@ -42,7 +43,8 @@ public class HttpHuntServiceTest {
         input.put("encryptedMessage", "KWWS KXQW LV D QLFH JDPH, L HQMRBHG VROYLQJ LW, UHDOOB...");
         input.put("key", 3);
 
-        Tester.test(() -> httpService.getDecryptedMsg(input), "HTTP HUNT IS A NICE GAME, I ENJOYED SOLVING IT, REALLY...");
+        Tester.testSize(() -> httpService.getDecryptedMsg(input), 57);
+        Tester.testString(() -> httpService.getDecryptedMsg(input), "HTTP HUNT IS A NICE GAME, I ENJOYED SOLVING IT, REALLY...");
 
     }
 
@@ -66,7 +68,8 @@ public class HttpHuntServiceTest {
         expectedOutput.add("flare");
         expectedOutput.add("firstaid");
 
-        Tester.test(() -> httpService.getHiddenTools(input), expectedOutput);
+        Tester.testCollection(() -> httpService.getHiddenTools(input), expectedOutput);
+        Tester.testSize(() -> httpService.getHiddenTools(input), 2);
 
     }
 
@@ -93,7 +96,8 @@ public class HttpHuntServiceTest {
         expectedOutput.add("gun");
         expectedOutput.add("rope");
 
-        Tester.test(() -> httpService.getHiddenTools(input), expectedOutput);
+        Tester.testCollection(() -> httpService.getHiddenTools(input), expectedOutput);
+        Tester.testSize(() -> httpService.getHiddenTools(input), 5);
 
     }
 
@@ -101,10 +105,10 @@ public class HttpHuntServiceTest {
     @Test
     public void testGetTimeUsage_0(){
 
-        Tester.test(() -> httpService.getTimeUsage("2017-01-30 10:10:00","2017-01-30 10:40:00"), 30);
-        Tester.test(() -> httpService.getTimeUsage("2017-01-30 11:10:00","2017-01-30 13:30:00"), 140);
-        Tester.test(() -> httpService.getTimeUsage("2017-01-30 12:10:00","2017-01-30 12:50:00"), 40);
-        Tester.test(() -> httpService.getTimeUsage("2017-01-30 10:10:00","2017-01-30 10:15:00"), 5);
+        Tester.testNumber(() -> httpService.getTimeUsage("2017-01-30 10:10:00","2017-01-30 10:40:00"), 30);
+        Tester.testNumber(() -> httpService.getTimeUsage("2017-01-30 11:10:00","2017-01-30 13:30:00"), 140);
+        Tester.testNumber(() -> httpService.getTimeUsage("2017-01-30 12:10:00","2017-01-30 12:50:00"), 40);
+        Tester.testNumber(() -> httpService.getTimeUsage("2017-01-30 10:10:00","2017-01-30 10:15:00"), 5);
 
     }
 
@@ -165,7 +169,8 @@ public class HttpHuntServiceTest {
         expectedOutput.add(new Tool("flare", 35));
         expectedOutput.add(new Tool("firstaid", 15));
 
-        Tester.test(() -> httpService.getToolsSortedOnUsage(input), expectedOutput);
+        Tester.testCollection(() -> httpService.getToolsSortedOnUsage(input), expectedOutput);
+        Tester.testSize(() -> httpService.getToolsSortedOnUsage(input), 4);
 
     }
 
@@ -206,8 +211,13 @@ public class HttpHuntServiceTest {
         List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("water");
 
-        Tester.test(() -> httpService.getToolsToTakeSorted(input), expectedOutput);
+        Tester.testCollection(() -> httpService.getToolsToTakeSorted(input), expectedOutput);
+        Tester.testSize(() -> httpService.getToolsToTakeSorted(input), 1);
+
+        Tester.testCustom(() -> httpService.getToolsToTakeSorted(input), output -> customTest(output,"water is available"));
+
     }
+
 
     @Test
     public void testGetToolsToTakeSorted_1() {
@@ -246,7 +256,31 @@ public class HttpHuntServiceTest {
         List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("flare");
 
-        Tester.test(() -> httpService.getToolsToTakeSorted(input), expectedOutput);
+        Tester.testCollection(() -> httpService.getToolsToTakeSorted(input), expectedOutput);
+        Tester.testSize(() -> httpService.getToolsToTakeSorted(input), 1);
 
+
+    }
+
+    private Object customTest(Object obj, Object expectedOutput) {
+
+        List<String> list = (List<String>) obj;
+        boolean flag = false;
+        for(String str : list){
+            if(str.equals("water")) {
+                flag = true;
+                break;
+            }
+        }
+
+        Object actualOutput = null;
+        if(flag)
+            actualOutput = "water is available";
+        else
+            actualOutput = "water is not available";
+
+            Assert.assertEquals(expectedOutput,actualOutput);
+
+        return actualOutput;
     }
 }
